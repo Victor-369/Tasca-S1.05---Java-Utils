@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 public class ReadFolderToFile {
+    public static final String RESULT_FILE_PATH =
+            "src/main/java/com/pruebas/proyecto/nivell1/file/exercici3Result.txt";
+
     public static void main(String[] args) {
         if (!hasValidArgument(args)) {
             System.out.println("You had to add one folder name to read it.");
@@ -31,7 +34,7 @@ public class ReadFolderToFile {
 
         try {
             FileWriter writer = new FileWriter(
-                    "src/main/java/com/pruebas/proyecto/nivell1/file/exercici3Result.txt"
+                    RESULT_FILE_PATH
             );
 
             listFolder(folder, 0, writer);

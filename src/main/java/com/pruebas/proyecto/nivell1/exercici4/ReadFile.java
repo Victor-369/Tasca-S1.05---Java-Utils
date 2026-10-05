@@ -1,28 +1,48 @@
 package com.pruebas.proyecto.nivell1.exercici4;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.*;
 
 public class ReadFile {
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("You had to add one TXT file name to read it.");
+        if (!hasValidArgument(args)) {
+            System.out.println("Error: Needs only one argument.");
+
             return;
         }
 
-        File file = new File(args[0]);
-        if (!file.exists() || !file.isFile()) {
-            System.out.println("Not possible to read file.");
+        File inputFile = new File(args[0]);
+        if (!fileExists(inputFile)) {
+            System.out.println("Error: File does not exists.");
+
             return;
         }
 
-        try {
-            String contents = Files.readString(file.toPath(), StandardCharsets.UTF_8);
-            System.out.print(contents);
-        } catch (IOException e) {
-            System.out.println("Error reading file.");
+        if (!isFile(inputFile)) {
+            System.out.println("Error: the specified path is not a file.");
+
+            return;
         }
+
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(inputFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) System.out.println(line);
+
+        } catch (IOException exception) {
+            System.out.println("Error reading the file: " + exception.getMessage());
+        }
+    }
+
+    public static boolean hasValidArgument(String[] args) {
+        return args.length == 1;
+    }
+
+    public static boolean fileExists(File inputFile) {
+        return inputFile.exists();
+    }
+
+    public static boolean isFile(File inputFile) {
+        return inputFile.isFile();
     }
 }
