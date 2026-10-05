@@ -1,12 +1,12 @@
 package com.pruebas.proyecto.nivell1.exercici4;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,44 +15,42 @@ class ReadFileTest {
     Path tempDir;
 
     @Test
-    void printsTextFileContents() throws Exception {
+    void printsContentsOfTheGivenFile() throws Exception {
         Path file = tempDir.resolve("notes.txt");
-        String contents = String.join(System.lineSeparator(), "First line", "Second line");
-        Files.writeString(file, contents);
+        Files.writeString(file, "First line" + System.lineSeparator() + "Second line");
 
-        assertThat(runReadFile(file.toString())).isEqualTo(contents);
+        assertThat(runReadFile(file.toString()))
+                .isEqualTo("First line" + System.lineSeparator()
+                        + "Second line" + System.lineSeparator());
     }
 
     @Test
-    void printsAnErrorWhenNoArgumentIsProvided() {
+    void printsAnErrorWhenArgumentIsMissing() {
         assertThat(runReadFile())
-                .contains("You had to add one TXT file name to read it.");
+                .contains("Error: Needs only one argument.");
     }
 
     @Test
     void printsAnErrorWhenFileDoesNotExist() {
         assertThat(runReadFile(tempDir.resolve("missing.txt").toString()))
-                .contains("Not possible to read file.");
+                .contains("Error: File does not exists.");
     }
 
     @Test
-    void printsAnErrorWhenPathIsADirectory() {
+    void printsAnErrorWhenPathIsNotAFile() {
         assertThat(runReadFile(tempDir.toString()))
-                .contains("Not possible to read file.");
+                .contains("Error: the specified path is not a file.");
     }
-
-
-
 
     private String runReadFile(String... arguments) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        PrintStream testOutput = new PrintStream(output);
+        PrintStream originalOut = System.out;
 
-        try {
+        try (PrintStream testOutput = new PrintStream(output)) {
             System.setOut(testOutput);
             ReadFile.main(arguments);
         } finally {
-            testOutput.close();
+            System.setOut(originalOut);
         }
 
         return output.toString();
