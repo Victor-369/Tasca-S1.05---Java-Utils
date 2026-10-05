@@ -3,7 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
-src/main/java/com/pruebas/proyecto/nivell1/file/exercici3Result.txt
+src/main/java/com/pruebas/proyecto/nivell1/file/*
 
 ### IntelliJ IDEA ###
 .idea/
