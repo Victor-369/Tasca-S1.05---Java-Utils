@@ -3,6 +3,8 @@ package com.pruebas.proyecto.nivell1.exercici3;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
@@ -32,15 +34,18 @@ public class ReadFolderToFile {
             return;
         }
 
+        Path resultPath = Path.of(RESULT_FILE_PATH);
+
         try {
-            FileWriter writer = new FileWriter(
-                    RESULT_FILE_PATH
-            );
+            Files.createDirectories(resultPath.getParent());
+        } catch (IOException e) {
+            System.out.println("Not possible to create result folder.");
 
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter(resultPath.toFile())) {
             listFolder(folder, 0, writer);
-
-            writer.close();
-
         } catch (IOException e) {
             System.out.println("Error writing file.");
         }
