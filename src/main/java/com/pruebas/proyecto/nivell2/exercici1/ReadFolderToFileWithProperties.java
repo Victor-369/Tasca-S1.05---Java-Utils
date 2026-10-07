@@ -24,6 +24,12 @@ public class ReadFolderToFileWithProperties {
         }
 
         File folder = new File(inputDirectory);
+        if (!createFolderIfMissing(folder)) {
+            System.out.println("Not possible to create input folder.");
+
+            return;
+        }
+
         if (!isValidFolder(folder)) {
             System.out.println("Not possible to read folder.");
 
@@ -37,13 +43,23 @@ public class ReadFolderToFileWithProperties {
             return;
         }
 
-        try {
-            FileWriter writer = new FileWriter(outputFile);
-            listFolder(folder, 0, writer);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Error writing file.");
+        File output = new File(outputFile);
+        File parent = output.getParentFile();
+        if (parent != null && !createFolderIfMissing(parent)) {
+            System.out.println("Not possible to create output folder.");
+
+            return;
         }
+
+        try (FileWriter writer = new FileWriter(output)) {
+            listFolder(folder, 0, writer);
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+    }
+
+    public static boolean createFolderIfMissing(File folder) {
+        return folder.exists() || folder.mkdirs();
     }
 
     public static Properties loadProperties() {
